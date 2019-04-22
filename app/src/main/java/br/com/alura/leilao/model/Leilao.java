@@ -34,7 +34,7 @@ public class Leilao implements Serializable {
             maiorLance = lance.getValor();
         }
 
-        if (lance.getValor() > menorLance) {
+        if (lance.getValor() < menorLance) {
             menorLance = lance.getValor();
         }
     }
