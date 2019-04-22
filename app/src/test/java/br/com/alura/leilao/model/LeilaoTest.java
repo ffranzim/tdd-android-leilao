@@ -6,19 +6,23 @@ import static org.junit.Assert.*;
 
 public class LeilaoTest {
 
+    private final String DESCRICAO_LEILAO = "PS4";
+    private final double MENOR_LANCE = 14.20;
+    private final double MAIOR_LANCE = 16.20;
+    private final Usuario FRANZIM = new Usuario("Franzim");
+    private final Usuario HUGO = new Usuario("Hugo");
+
+    //Criar cenario de teste
+    private final Leilao PS4 = new Leilao(DESCRICAO_LEILAO);
+
     @Test
     public void getDescricao() {
 
-        final  String descricaoLeilao = "PS4";
-
-        //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-
         //executar ação esperada
-        String descricao = ps4.getDescricao();
+        String descricao = PS4.getDescricao();
 
         //tester resultado esperado
-        assertEquals(descricaoLeilao, descricao);
+        assertEquals(DESCRICAO_LEILAO, descricao);
 
     }
 
@@ -27,111 +31,81 @@ public class LeilaoTest {
 
     @Test
     public void deve_DevolverMaiorLance_QuandoApenasUmLance() {
-        final String descricaoLeilao = "PS4";
-        final double lance = 14.20;
-        Usuario franzim = new Usuario("Franzim");
 
         //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-        ps4.propoe(new Lance( franzim, lance));
+        Leilao ps4 = new Leilao(DESCRICAO_LEILAO);
+        ps4.propoe(new Lance(FRANZIM, MENOR_LANCE));
 
         //executar ação esperada
         double maiorLancePS4 = ps4.getMaiorLance();
 
-        assertEquals(lance , maiorLancePS4, 0.0001);
+        assertEquals(MENOR_LANCE, maiorLancePS4, 0.0001);
     }
 
     @Test
     public void deve_DevolverMaiorLance_QuandoRecebeMaisDeUmLanceEmOrdemCrescente() {
-        final String descricaoLeilao = "PS4";
-        final double menorLance = 14.20;
-        final double maiorLance = 16.20;
-        Usuario franzim = new Usuario("Franzim");
-        Usuario hugo = new Usuario("Hugo");
 
         //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-        ps4.propoe(new Lance(franzim, menorLance));
-        ps4.propoe(new Lance(hugo, maiorLance));
+        Leilao ps4 = new Leilao(DESCRICAO_LEILAO);
+        ps4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        ps4.propoe(new Lance(HUGO, MAIOR_LANCE));
 
         //executar ação esperada
         double maiorLancePS4 = ps4.getMaiorLance();
 
-        assertEquals(maiorLance, maiorLancePS4, 0.0001);
+        assertEquals(MAIOR_LANCE, maiorLancePS4, 0.0001);
     }
 
     @Test
     public void deve_DevolverMaiorLance_QuandoRecebeMaisDeUmLanceEmOrdemDecrescente() {
-        final String descricaoLeilao = "PS4";
-        final double menorLance = 14.20;
-        final double maiorLance = 16.20;
-        Usuario franzim = new Usuario("Franzim");
-        Usuario hugo = new Usuario("Hugo");
 
-        //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-        ps4.propoe(new Lance(hugo, maiorLance));
-        ps4.propoe(new Lance( franzim, menorLance));
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
 
         //executar ação esperada
-        double maiorLancePS4 = ps4.getMaiorLance();
+        double maiorLancePS4 = PS4.getMaiorLance();
 
-        assertEquals(maiorLance , maiorLancePS4, 0.0001);
+        assertEquals(MAIOR_LANCE, maiorLancePS4, 0.0001);
     }
 
     @Test
     public void deve_DevolverMenorLance_QuandoApenasUmLance() {
-        final String descricaoLeilao = "PS4";
-        final double lance = 14.20;
-
-        Usuario franzim = new Usuario("Franzim");
-        Usuario hugo = new Usuario("Hugo");
 
         //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-        ps4.propoe(new Lance(hugo, lance));
+        Leilao ps4 = new Leilao(DESCRICAO_LEILAO);
+        ps4.propoe(new Lance(HUGO, MENOR_LANCE));
 
         //executar ação esperada
         double menorLancePS4 = ps4.getMenorLance();
 
-        assertEquals(lance , menorLancePS4, 0.0001);
+        assertEquals(MENOR_LANCE, menorLancePS4, 0.0001);
     }
 
     @Test
     public void deve_DevolverMenorLance_QuandoRecebeMaisDeUmLanceEmOrdemCrescente() {
-        final String descricaoLeilao = "PS4";
-        final double menorLance = 14.20;
-        final double maiorLance = 16.20;
-        Usuario franzim = new Usuario("Franzim");
-        Usuario hugo = new Usuario("Hugo");
 
         //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-        ps4.propoe(new Lance(franzim, menorLance));
-        ps4.propoe(new Lance(hugo, maiorLance));
+        Leilao ps4 = new Leilao(DESCRICAO_LEILAO);
+        ps4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        ps4.propoe(new Lance(HUGO, MAIOR_LANCE));
 
         //executar ação esperada
         double menorLancePS4 = ps4.getMenorLance();
 
-        assertEquals(menorLance, menorLancePS4, 0.0001);
+        assertEquals(MENOR_LANCE, menorLancePS4, 0.0001);
     }
 
     @Test
     public void deve_DevolverMenorLance_QuandoRecebeMaisDeUmLanceEmOrdemDecrescente() {
-        final String descricaoLeilao = "PS4";
-        final double menorLance = 14.20;
-        final double maiorLance = 16.20;
-        Usuario franzim = new Usuario("Franzim");
-        Usuario hugo = new Usuario("Hugo");
 
         //Criar cenario de teste
-        Leilao ps4 = new Leilao(descricaoLeilao);
-        ps4.propoe(new Lance(hugo, maiorLance));
-        ps4.propoe(new Lance( franzim, menorLance));
+        Leilao ps4 = new Leilao(DESCRICAO_LEILAO);
+        ps4.propoe(new Lance(HUGO, MAIOR_LANCE));
+        ps4.propoe(new Lance(FRANZIM, MENOR_LANCE));
 
         //executar ação esperada
         double menorLancePS4 = ps4.getMenorLance();
 
-        assertEquals(menorLance , menorLancePS4, 0.0001);
+        assertEquals(MENOR_LANCE, menorLancePS4, 0.0001);
     }
 }
