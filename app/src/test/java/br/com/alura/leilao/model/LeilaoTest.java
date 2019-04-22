@@ -127,8 +127,62 @@ public class LeilaoTest {
         List<Lance> tresMaioresLances = PS4.tresMaioresLances();
 
         assertEquals(3, tresMaioresLances.size(), DELTA);
-        assertEquals(tresMaioresLances.get(0).getValor(), MAIOR_LANCE, DELTA);
-        assertEquals(tresMaioresLances.get(1).getValor(), 15.20, DELTA);
-        assertEquals(tresMaioresLances.get(2).getValor(), MENOR_LANCE, DELTA);
+        assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
+        assertEquals(15.20, tresMaioresLances.get(1).getValor(), DELTA);
+        assertEquals(MENOR_LANCE, tresMaioresLances.get(2).getValor(), DELTA);
     }
+
+    @Test
+    public void deve_DevolverTresMaioresLances_QuandoRecebeNaoRecebeLances() {
+
+        //Criar cenario de teste
+        List<Lance> tresMaioresLances = PS4.tresMaioresLances();
+
+        assertEquals(0, tresMaioresLances.size());
+    }
+
+    @Test
+    public void deve_DevolverTresMaioresLances_QuandoRecebeApenasUmRecebeLance() {
+
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
+
+        //Criar cenario de teste
+        List<Lance> tresMaioresLances = PS4.tresMaioresLances();
+
+        assertEquals(1, tresMaioresLances.size());
+        assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
+    }
+    
+    @Test
+    public void deve_DevolverTresMaioresLances_QuandoRecebeExatoDoisLances() {
+
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+
+        //Criar cenario de teste
+        List<Lance> tresMaioresLances = PS4.tresMaioresLances();
+
+        assertEquals(2, tresMaioresLances.size());
+        assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
+        assertEquals(MENOR_LANCE, tresMaioresLances.get(1).getValor(), DELTA);
+    }
+
+    @Test
+    public void deve_DevolverTresMaioresLances_QuandoRecebeMaisDeTresLances() {
+
+        PS4.propoe(new Lance(HUGO, MENOR_LANCE));
+        PS4.propoe(new Lance(FRANZIM, 15.20));
+        PS4.propoe(new Lance(HUGO, 16.00));
+        PS4.propoe(new Lance(FRANZIM, MAIOR_LANCE));
+
+        //Criar cenario de teste
+        List<Lance> tresMaioresLances = PS4.tresMaioresLances();
+
+        assertEquals(3, tresMaioresLances.size());
+        assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
+        assertEquals(16.00, tresMaioresLances.get(1).getValor(), DELTA);
+        assertEquals(15.20, tresMaioresLances.get(2).getValor(), DELTA);
+    }
+
+
 }

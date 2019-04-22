@@ -38,6 +38,7 @@ public class ListaLeilaoActivity extends AppCompatActivity {
         Leilao console = new Leilao("Console");
         console.propoe(new Lance(new Usuario("Daniel"), 50));
         console.propoe(new Lance(new Usuario("Franzim"), 200));
+        console.propoe(new Lance(new Usuario("Franzim"), 150));
         return new ArrayList<>(Arrays.asList(
                 console
         ));

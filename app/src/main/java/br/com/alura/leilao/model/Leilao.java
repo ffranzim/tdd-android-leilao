@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Leilao implements Serializable {
 
+
     private final String descricao;
     private final List<Lance> lances;
     private double maiorLance = Double.NEGATIVE_INFINITY;
@@ -51,7 +52,12 @@ public class Leilao implements Serializable {
     }
 
     public List<Lance> tresMaioresLances() {
+        final int QTD_MAX_LANCES = 3;
+
         Collections.sort(lances);
-        return lances.subList(0,3);
+        if (lances.size() > QTD_MAX_LANCES) {
+            return lances.subList(0, QTD_MAX_LANCES);
+        }
+        return lances.subList(0, lances.size());
     }
 }
