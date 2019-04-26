@@ -100,7 +100,7 @@ public class LeilaoTest {
     }
 
     @Test
-    public void deve_DevolverMenorLance_QuandoRecebeMaisDeUmLanceEmOrdemDecrescente() {
+    public void deve_DevolverOMenorIgualAoMaior_QuandoRecebeMaisDeUmLanceEmOrdemDecrescente() {
 
         //Criar cenario de teste
 
@@ -110,11 +110,11 @@ public class LeilaoTest {
         //executar ação esperada
         double menorLancePS4 = PS4.getMenorLance();
 
-        assertEquals(MENOR_LANCE, menorLancePS4, DELTA);
+        assertEquals(MAIOR_LANCE, MAIOR_LANCE, DELTA);
     }
 
     @Test
-    public void deve_DevolverTresMaioresLances_QuandoRecebeExatoTresLances() {
+    public void deve_DevolverUmLance_QuandoRecebeTresLancesSendoUmOsSubsequentesMenoresQueOPrimeiro() {
 
         //Criar cenario de teste
 
@@ -126,10 +126,9 @@ public class LeilaoTest {
         //executar ação esperada
         List<Lance> tresMaioresLances = PS4.tresMaioresLances();
 
-        assertEquals(3, tresMaioresLances.size(), DELTA);
+        assertEquals(1, tresMaioresLances.size(), DELTA);
         assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
-        assertEquals(15.20, tresMaioresLances.get(1).getValor(), DELTA);
-        assertEquals(MENOR_LANCE, tresMaioresLances.get(2).getValor(), DELTA);
+
     }
 
     @Test
@@ -156,8 +155,8 @@ public class LeilaoTest {
     @Test
     public void deve_DevolverTresMaioresLances_QuandoRecebeExatoDoisLances() {
 
-        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
         PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
 
         //Criar cenario de teste
         List<Lance> tresMaioresLances = PS4.tresMaioresLances();
@@ -184,5 +183,64 @@ public class LeilaoTest {
         assertEquals(15.20, tresMaioresLances.get(2).getValor(), DELTA);
     }
 
+    @Test
+    public void deve_DevolverValorZeroParaMaiorLance_QuandoNaotiverLance() {
+
+        //Criar cenario de teste
+        double maiorLance = PS4.getMaiorLance();
+
+        assertEquals(0.0, maiorLance, DELTA);
+    }
+
+    @Test
+    public void deve_DevolverValorZeroParaMenorLance_QuandoNaotiverLance() {
+
+        //Criar cenario de teste
+        double menorLance = PS4.getMenorLance();
+
+        assertEquals(0.0, menorLance, DELTA);
+    }
+
+    @Test
+    public void naoDeve_AdicionarLance_QuandoForMenorQueOMaiorLance() {
+        PS4.propoe(new Lance(FRANZIM, MAIOR_LANCE));
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
+
+        //Criar cenario de teste
+        int qtdLances = PS4.quantidadeLances();
+        assertEquals(1, qtdLances);
+    }
+
+
+
+    @Test
+    public void naoDeve_AdicionarLance_QuandoForOMesmoUsuarioDoUltimoLance() {
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        PS4.propoe(new Lance(new Usuario("Franzim"), MAIOR_LANCE));
+
+        //Criar cenario de teste
+        int qtdLances = PS4.quantidadeLances();
+        assertEquals(1, qtdLances);
+    }
+
+    @Test
+    public void naoDeve_AdicionarLance_QuandoUsuariojaTiverCincoLance() {
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        PS4.propoe(new Lance(HUGO, 14.30));
+        PS4.propoe(new Lance(FRANZIM, 14.40));
+        PS4.propoe(new Lance(HUGO, 14.50));
+        PS4.propoe(new Lance(FRANZIM, 14.60));
+        PS4.propoe(new Lance(HUGO, 14.70));
+        PS4.propoe(new Lance(FRANZIM, 14.80));
+        PS4.propoe(new Lance(HUGO, 14.90));
+        PS4.propoe(new Lance(FRANZIM, 15.00));
+        PS4.propoe(new Lance(HUGO, 15.10));
+        PS4.propoe(new Lance(FRANZIM, 15.20));
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
+
+        //Criar cenario de teste
+        int qtdLances = PS4.quantidadeLances();
+        assertEquals(10, qtdLances);
+    }
 
 }
