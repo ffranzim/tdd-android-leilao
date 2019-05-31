@@ -1,8 +1,14 @@
 package br.com.alura.leilao.model;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
+
+import br.com.alura.leilao.exception.LanceMenorQueUltimoLanceException;
+import br.com.alura.leilao.exception.LanceSeguidoDoMesmoUsuarioException;
+import br.com.alura.leilao.exception.UsuarioJaDeuCincoLancesException;
 
 import static org.junit.Assert.*;
 
@@ -60,21 +66,14 @@ public class LeilaoTest {
         assertEquals(MAIOR_LANCE, maiorLancePS4, DELTA);
     }
 
-    @Test
+    @Test(expected = LanceMenorQueUltimoLanceException.class)
     public void deve_DevolverMaiorLance_QuandoRecebeMaisDeUmLanceEmOrdemDecrescente() {
 
         PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
-        try {
-            PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
-            fail("Era esperada uma RuntimeException.");
-        } catch (RuntimeException e) {
-            assertEquals("Lance menor que maior lance.", e.getMessage());
-        } finally {
-            //executar ação esperada
-            double maiorLancePS4 = PS4.getMaiorLance();
-            assertEquals(MAIOR_LANCE, maiorLancePS4, DELTA);
-        }
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
 
+        double maiorLancePS4 = PS4.getMaiorLance();
+        assertEquals(MAIOR_LANCE, maiorLancePS4, DELTA);
     }
 
     @Test
@@ -104,44 +103,33 @@ public class LeilaoTest {
         assertEquals(MENOR_LANCE, menorLancePS4, DELTA);
     }
 
-    @Test
+    @Test(expected = LanceMenorQueUltimoLanceException.class)
     public void deve_DevolverOMenorIgualAoMaior_QuandoRecebeMaisDeUmLanceEmOrdemDecrescente() {
 
         //Criar cenario de teste
-
         PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
 
-        try {
-            PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
-            fail("Era esperada uma RuntimeException.");
-        } catch (RuntimeException e) {
-            assertEquals("Lance menor que maior lance.", e.getMessage());
-        } finally {
-            //executar ação esperada
-            double menorLancePS4 = PS4.getMenorLance();
-            assertEquals(MAIOR_LANCE, menorLancePS4, DELTA);
-        }
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+
+        //executar ação esperada
+        double menorLancePS4 = PS4.getMenorLance();
+        assertEquals(MAIOR_LANCE, menorLancePS4, DELTA);
     }
 
-    @Test
+    @Test(expected = LanceMenorQueUltimoLanceException.class)
     public void deve_DevolverUmLance_QuandoRecebeTresLancesSendoUmOsSubsequentesMenoresQueOPrimeiro() {
 
         //Criar cenario de teste
 
         PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
-        try {
-            PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
-            PS4.propoe(new Lance(HUGO, 15.20));
-            fail("Era esperada uma RuntimeException.");
-        } catch (RuntimeException e) {
-            assertEquals("Lance menor que maior lance.", e.getMessage());
-        } finally {
-            //executar ação esperada
-            List<Lance> tresMaioresLances = PS4.tresMaioresLances();
+        PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        PS4.propoe(new Lance(HUGO, 15.20));
 
-            assertEquals(1, tresMaioresLances.size(), DELTA);
-            assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
-        }
+        //executar ação esperada
+        List<Lance> tresMaioresLances = PS4.tresMaioresLances();
+
+        assertEquals(1, tresMaioresLances.size(), DELTA);
+        assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
     }
 
     @Test
@@ -179,7 +167,6 @@ public class LeilaoTest {
         assertEquals(MENOR_LANCE, tresMaioresLances.get(1).getValor(), DELTA);
     }
 
-    @Test
     public void deve_DevolverTresMaioresLances_QuandoRecebeMaisDeTresLances() {
 
         PS4.propoe(new Lance(HUGO, MENOR_LANCE));
@@ -215,44 +202,30 @@ public class LeilaoTest {
     }
 
 
-    @Test
+    @Test(expected = LanceMenorQueUltimoLanceException.class)
     public void naoDeve_AdicionarLance_QuandoForMenorQueOMaiorLance() {
+
         PS4.propoe(new Lance(FRANZIM, MAIOR_LANCE));
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
 
-        try {
-            PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
-            fail("Era esperada uma RuntimeException.");
-        } catch (RuntimeException e) {
-            assertEquals("Lance menor que maior lance.", e.getMessage());
-        } finally {
-            //Criar cenario de teste
-            int qtdLances = PS4.quantidadeLances();
-            assertEquals(1, qtdLances);
-        }
-
-
+        //Criar cenario de teste
+        int qtdLances = PS4.quantidadeLances();
+        assertEquals(1, qtdLances);
     }
 
 
-    @Test
+    @Test(expected = LanceSeguidoDoMesmoUsuarioException.class)
     public void naoDeve_AdicionarLance_QuandoForOMesmoUsuarioDoUltimoLance() {
+
         PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
+        PS4.propoe(new Lance(new Usuario("Franzim"), MAIOR_LANCE));
 
-        try {
-            PS4.propoe(new Lance(new Usuario("Franzim"), MAIOR_LANCE));
-            fail("Esperada uma RuntimeException");
-        } catch (RuntimeException e) {
-            assertEquals("Mesmo usuario de ultimo lance.", e.getMessage());
-        } finally {
-            //Criar cenario de teste
-            int qtdLances = PS4.quantidadeLances();
-            assertEquals(1, qtdLances);
-        }
-
-
+        //Criar cenario de teste
+        int qtdLances = PS4.quantidadeLances();
+        assertEquals(1, qtdLances);
     }
 
-    @Test
+    @Test(expected = UsuarioJaDeuCincoLancesException.class)
     public void naoDeve_AdicionarLance_QuandoUsuariojaTiverCincoLance() {
         PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
         PS4.propoe(new Lance(HUGO, 14.30));
@@ -266,18 +239,11 @@ public class LeilaoTest {
         PS4.propoe(new Lance(HUGO, 15.10));
         PS4.propoe(new Lance(FRANZIM, 15.20));
 
-        try {
-            PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
-            fail("Esperada uma RuntimeException");
-        } catch (RuntimeException e) {
-            assertEquals("Mesmo usuario de ultimo lance.", e.getMessage());
-        } finally {
-            //Criar cenario de teste
-            int qtdLances = PS4.quantidadeLances();
-            assertEquals(10, qtdLances);
-        }
+        PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
 
-
+        //Criar cenario de teste
+        int qtdLances = PS4.quantidadeLances();
+        assertEquals(10, qtdLances);
     }
 
 }

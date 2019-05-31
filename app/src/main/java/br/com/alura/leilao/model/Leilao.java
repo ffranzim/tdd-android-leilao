@@ -1,11 +1,13 @@
 package br.com.alura.leilao.model;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import br.com.alura.leilao.exception.LanceMenorQueUltimoLanceException;
+import br.com.alura.leilao.exception.LanceSeguidoDoMesmoUsuarioException;
+import br.com.alura.leilao.exception.UsuarioJaDeuCincoLancesException;
 
 public class Leilao implements Serializable {
 
@@ -36,13 +38,10 @@ public class Leilao implements Serializable {
     public void propoe(Lance lance) {
 
         if(maiorLance >= lance.getValor()) {
-            throw new RuntimeException("Lance menor que maior lance.");
+            throw new LanceMenorQueUltimoLanceException();
         }
 
-        if (lanceNaoValido(lance)) {
-            return;
-        }
-
+        valida(lance);
 
         lances.add(lance);
         if(lances.size() == 1) {
@@ -59,19 +58,18 @@ public class Leilao implements Serializable {
         calculaMenorLance(lance, lanceValor);
     }
 
-    private boolean lanceNaoValido(Lance lance) {
+    private void valida(Lance lance) {
         if(!lances.isEmpty()){
             Usuario usuarioLanceAtual = lance.getUsuario();
 
             if (lanceMenorQueMaiorLance(usuarioLanceAtual)) {
-                return true;
+                throw new LanceMenorQueUltimoLanceException();
             }
 
             if (usuarioJaDeuCincoLances(lance)) {
-                return true;
+                throw new UsuarioJaDeuCincoLancesException();
             }
         }
-        return false;
     }
 
     private boolean usuarioJaDeuCincoLances(Lance lance) {
@@ -96,7 +94,7 @@ public class Leilao implements Serializable {
         Usuario usuarioLanceMaiorLance = lances.get(0).getUsuario();
 
         if(usuarioLanceAtual.equals(usuarioLanceMaiorLance)) {
-            throw new RuntimeException("Mesmo usuario de ultimo lance.");
+            throw new LanceSeguidoDoMesmoUsuarioException();
         }
         return false;
     }

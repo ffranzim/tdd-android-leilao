@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 /**
@@ -22,5 +23,16 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("br.com.alura.leilao", appContext.getPackageName());
+        assertNotEquals(3, 2 + 2);
+
+        assertTrue(true);
+        assertFalse(false);
+
+        assertNull(null);
+        assertNotNull("Not null");
+
+        assertThat(2 + 2, equalTo(4));
+
+
     }
 }
