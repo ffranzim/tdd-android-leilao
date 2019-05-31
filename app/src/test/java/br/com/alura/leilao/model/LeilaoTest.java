@@ -1,5 +1,6 @@
 package br.com.alura.leilao.model;
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -10,6 +11,13 @@ import br.com.alura.leilao.exception.LanceMenorQueUltimoLanceException;
 import br.com.alura.leilao.exception.LanceSeguidoDoMesmoUsuarioException;
 import br.com.alura.leilao.exception.UsuarioJaDeuCincoLancesException;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.CombinableMatcher.both;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.*;
 
 public class LeilaoTest {
@@ -32,7 +40,8 @@ public class LeilaoTest {
         String descricao = PS4.getDescricao();
 
         //tester resultado esperado
-        assertEquals(DESCRICAO_LEILAO, descricao);
+//        assertEquals(DESCRICAO_LEILAO, descricao);
+        assertThat(descricao, is(equalTo(DESCRICAO_LEILAO)));
 
     }
 
@@ -49,7 +58,8 @@ public class LeilaoTest {
         //executar ação esperada
         double maiorLancePS4 = ps4.getMaiorLance();
 
-        assertEquals(MENOR_LANCE, maiorLancePS4, DELTA);
+//        assertEquals(MENOR_LANCE, maiorLancePS4, DELTA);
+        assertThat(maiorLancePS4, closeTo(MENOR_LANCE, DELTA));
     }
 
     @Test
@@ -120,7 +130,6 @@ public class LeilaoTest {
     public void deve_DevolverUmLance_QuandoRecebeTresLancesSendoUmOsSubsequentesMenoresQueOPrimeiro() {
 
         //Criar cenario de teste
-
         PS4.propoe(new Lance(HUGO, MAIOR_LANCE));
         PS4.propoe(new Lance(FRANZIM, MENOR_LANCE));
         PS4.propoe(new Lance(HUGO, 15.20));
@@ -128,8 +137,11 @@ public class LeilaoTest {
         //executar ação esperada
         List<Lance> tresMaioresLances = PS4.tresMaioresLances();
 
-        assertEquals(1, tresMaioresLances.size(), DELTA);
+//        assertEquals(1, tresMaioresLances.size(), DELTA);
         assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
+
+        assertThat(tresMaioresLances, hasSize(equalTo(1)));
+        assertThat(tresMaioresLances, hasItem(new Lance(HUGO, MAIOR_LANCE)));
     }
 
     @Test
@@ -167,6 +179,7 @@ public class LeilaoTest {
         assertEquals(MENOR_LANCE, tresMaioresLances.get(1).getValor(), DELTA);
     }
 
+    @Test
     public void deve_DevolverTresMaioresLances_QuandoRecebeMaisDeTresLances() {
 
         PS4.propoe(new Lance(HUGO, MENOR_LANCE));
@@ -177,10 +190,24 @@ public class LeilaoTest {
         //Criar cenario de teste
         List<Lance> tresMaioresLances = PS4.tresMaioresLances();
 
-        assertEquals(3, tresMaioresLances.size());
+//        assertEquals(3, tresMaioresLances.size());
         assertEquals(MAIOR_LANCE, tresMaioresLances.get(0).getValor(), DELTA);
         assertEquals(16.00, tresMaioresLances.get(1).getValor(), DELTA);
         assertEquals(15.20, tresMaioresLances.get(2).getValor(), DELTA);
+
+        assertThat(tresMaioresLances, hasSize(equalTo(3)));
+        assertThat(tresMaioresLances, hasItem(new Lance(HUGO, 16.00)));
+        assertThat(tresMaioresLances, contains(
+                new Lance(FRANZIM, MAIOR_LANCE),
+                new Lance(HUGO, 16.00),
+                new Lance(FRANZIM, 15.20)
+        ));
+
+        assertThat(tresMaioresLances, both(Matchers.<Lance>hasSize(3)).and(contains(
+                new Lance(FRANZIM, MAIOR_LANCE),
+                new Lance(HUGO, 16.00),
+                new Lance(FRANZIM, 15.20)
+        )));
     }
 
     @Test
