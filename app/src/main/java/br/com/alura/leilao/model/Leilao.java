@@ -1,5 +1,7 @@
 package br.com.alura.leilao.model;
 
+import android.view.accessibility.AccessibilityNodeInfo;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +36,7 @@ public class Leilao implements Serializable {
     public void propoe(Lance lance) {
 
         if(maiorLance >= lance.getValor()) {
-            return;
+            throw new RuntimeException("Lance menor que maior lance.");
         }
 
         if (lanceNaoValido(lance)) {
@@ -94,7 +96,7 @@ public class Leilao implements Serializable {
         Usuario usuarioLanceMaiorLance = lances.get(0).getUsuario();
 
         if(usuarioLanceAtual.equals(usuarioLanceMaiorLance)) {
-            return true;
+            throw new RuntimeException("Mesmo usuario de ultimo lance.");
         }
         return false;
     }
